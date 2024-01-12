@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{%block title%}
+Profile 
+{%endblock%}
+
+{%block content%}
+<div class="container my-5">
+  <h1>Wellcom! <strong class="text-info">{{user.first_name}}</strong></h1>
+  <h5>Account No: <strong class=" ">{{user.account.account_no}}</strong></h5>
+  <h5>Account Balance: <strong class="">{{user.account.balance}}</strong></h5>
+</div>
+<section class="container my-5">
+    <h1 class="text-center mb-4">My Borrow Report</h1>
+
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">id</th>
+            <th scope="col">Book</th>
+            <th scope="col">Borrow price</th>
+            <th scope="col">Category</th>
+            <th scope="col">Borow After Price</th>
+            <th scope="col">Date</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+         {%if borrow%}
+          {%for brw in borrow%}
+            <tr>
+                <th scope="row">{{brw.id}}</th>
+                <td>{{brw.book.name}}</td>
+                <td>{{brw.book.categories.name}}</td>
+                <td>{{brw.book.borrowing_price}}</td>
+                <td>{{brw.borrow_after_price}}</td>
+                <td>{{brw.borrow_time}}</td>
+                <td><a href={%url "return_book" brw.id%} class="btn btn-primary">Return</a></td>
+            </tr>
+          {% endfor %}
+         {%endif%}
+        </tbody>
+      </table>
+
+</section>
+
+
+{%endblock%}

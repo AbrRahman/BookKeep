@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{%block title%}Login {%endblock%}
+
+{%block content%} 
+
+{% load crispy_forms_tags%}
+
+<form action="" method='post' class="w-50 mx-auto my-4">
+    <h2>Login Form</h2>
+ <!--{{form|crispy}}-->
+{% csrf_token %}
+
+{%for fm in form%}
+{{fm.label}}
+{{fm}}
+{{fm.errors}}
+{%endfor%}
+
+{%if form.non_field_errors%}
+{%for er in form.non_field_errors%}
+<p class="text-danger">{{er}}</p>
+{%endfor%}
+{%endif%}
+
+<button class="btn btn-primary mt-3" type="submit">Login</button>
+</form>
+
+{%endblock%}

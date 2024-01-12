@@ -1,0 +1,44 @@
+{% include "base.html" %}
+{% load static %}
+{%block title%}<title>Home</title>{%endblock%}
+
+{%block content%} 
+
+<section class="container my-5">
+    <div class="row">
+        <div class="col-md-2">
+            <div>
+                <a href={%url "book_cat" "all"%} class="text-decoration-none">All</a>
+            </div>
+            {%for cat in categories%}
+            <div>
+                <a href={%url "book_cat" cat.slug%} class="text-decoration-none">{{cat.name}}</a>
+            </div>
+            {%endfor%}
+        </div>
+
+        <div class="col-md-10">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+             
+             {%for book in books%}  
+             <div class="col">
+                <div class="card">
+                  <img src={{book.image.url}} class="card-img-top w-100" style="height:190px;" alt="...">
+                  <div class="card-body">
+                    <h5 class="card-title">{{book.name}}</h5>
+                    <p class="card-text">{{book.descriptions|truncatewords:8}}</p>
+                    <p class="card-text">Borrow Price : <strong class="text-warning">{{book.borrowing_price}} tk</strong></p>
+                    <a href={% url "book_details" book.id %} class="btn btn-primary">Detials</a>
+                </div>
+                </div>
+              </div>
+             {%endfor%}  
+
+           </div>
+
+        </div>
+    </div>
+</section>
+
+
+{%endblock%}

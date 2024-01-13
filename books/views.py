@@ -5,6 +5,9 @@ from books.forms import CommentForm
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+
 
 def book_details(request,id):
     book=Book.objects.get(pk=id)
@@ -41,6 +44,14 @@ def borrow_book(request,id):
             account=account,
             borrow_after_price=balance-bro_price
         )
+
+        # send email
+        mail_subject="Borrow Book Message"
+        to_mail=request.user.email
+        message=render_to_string('books/borrow_mail.html',{"book":book,"balance":balance})
+        send_email=EmailMultiAlternatives(mail_subject,'',to=[to_mail])
+        send_email.attach_alternative(message,'text/html')
+        send_email.send()
         messages.success(request,"Borrowing success")
     else:
         messages.warning(request,"Your account has not available balance")

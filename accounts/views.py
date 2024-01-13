@@ -8,10 +8,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from books.models import Borrow
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+
 class UserRegisterView(FormView):
     form_class=UserAccountForm
     template_name="accounts/user_register.html"
-    success_url = reverse_lazy("register")
+    success_url = reverse_lazy("login")
 
     def form_valid(self, form):
         form.save(commit=True)
@@ -28,7 +32,7 @@ class UserLoginView(LoginView):
 class DepositMoneyView(LoginRequiredMixin,CreateView):
     form_class=DepositForm
     template_name='accounts/deposit_money.html'
-    success_url = reverse_lazy('register')
+    success_url = reverse_lazy('deposit')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -44,6 +48,14 @@ class DepositMoneyView(LoginRequiredMixin,CreateView):
                 'balance'
             ]
         )
+        # email sanding
+        mail_subject="Deposit Message"
+        to_mail=self.request.user.email
+        message=render_to_string('accounts/deposit_mail.html',{"user":self.request.user,'amount':amount})
+        send_email=EmailMultiAlternatives(mail_subject,'',to=[to_mail])
+        send_email.attach_alternative(message,'text/html')
+        send_email.send()
+
         messages.success(self.request,f"Successfully {amount} tk deposit")
         return super().form_valid(form)
     
@@ -59,3 +71,7 @@ def profile(request):
     account=request.user.account
     borrow=Borrow.objects.filter(account=account)
     return render(request,"accounts/profile.html",{"borrow":borrow})
+
+
+
+
